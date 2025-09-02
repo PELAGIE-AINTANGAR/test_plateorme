@@ -1,0 +1,76 @@
+// Prisma schema for Motus (SQLite).
+// If you prefer native enums, switch to PostgreSQL (see Option B).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// NOTE: SQLite connector doesn't support Prisma enums.
+// We'll use string fields with app-level validation.
+
+model User {
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
+  username     String    @unique
+  passwordHash String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  games        Game[]
+  scores       Score[]
+}
+
+model Word {
+  id         Int       @id @default(autoincrement())
+  text       String    @unique
+  length     Int
+  difficulty String    // "easy" | "medium" | "hard" (validated côté app)
+  language   String    @default("fr")
+  source     String?
+  active     Boolean   @default(true)
+  createdAt  DateTime  @default(now())
+  games      Game[]
+}
+
+model Game {
+  id                Int       @id @default(autoincrement())
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            Int
+  word              Word?     @relation(fields: [wordId], references: [id])
+  wordId            Int?
+  difficulty        String    // "easy" | "medium" | "hard"
+  status            String    @default("in_progress") // "in_progress" | "won" | "lost"
+  attemptsUsed      Int       @default(0)
+  firstLetterGiven  Boolean   @default(true)
+  seed              String?
+  startedAt         DateTime  @default(now())
+  endedAt           DateTime?
+  guesses           Guess[]
+  score             Score?
+}
+
+model Guess {
+  id           Int      @id @default(autoincrement())
+  game         Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  gameId       Int
+  guessText    String
+  resultMask   String   // CSV like: C,P,A,A,C
+  attemptIndex Int
+  createdAt    DateTime @default(now())
+
+  @@unique([gameId, attemptIndex])
+}
+
+model Score {
+  id          Int      @id @default(autoincrement())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      Int
+  game        Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  gameId      Int      @unique
+  points      Int
+  durationMs  Int
+}

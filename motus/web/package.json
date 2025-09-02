@@ -1,0 +1,21 @@
+{
+  "name": "motus-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "echo 'add eslint if needed'"
+  },
+  "dependencies": {
+    "next": "14.2.5",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "tailwindcss": "3.4.7"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.12",
+    "typescript": "^5.5.4"
+  }
+}

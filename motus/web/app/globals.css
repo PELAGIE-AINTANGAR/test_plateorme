@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { --bg: #0b1020; --card: #121a33; --acc: #ff3b3b; }
+body { background: var(--bg); color: white; }
+
+/* Motus shapes */
+.cell { width: 48px; height: 48px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:20px; text-transform:uppercase; }
+.cell.blue { background:#2153aa; border-radius: 8px; }
+.cell.red-square { border: 4px solid #ff3b3b; border-radius: 8px; }
+.cell.yellow-circle { border: 4px solid #ffcc00; border-radius: 9999px; }
+.grid { display:grid; gap:8px; }
